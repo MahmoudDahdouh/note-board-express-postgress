@@ -1,0 +1,33 @@
+{
+  "name": "todo-list-express-postgress",
+  "version": "1.0.0",
+  "description": "A simple To-do list app using express framework and PostgreSQL Database and user management",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MahmoudDahdouh/todo-list-express-postgress.git"
+  },
+  "author": "Mahmoud Dahdouh",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MahmoudDahdouh/todo-list-express-postgress/issues"
+  },
+  "homepage": "https://github.com/MahmoudDahdouh/todo-list-express-postgress#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.20.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "jsonwebtoken": "^8.5.1",
+    "pg": "^8.8.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19"
+  }
+}
