@@ -1,7 +1,7 @@
 {
-  "name": "todo-list-express-postgress",
+  "name": "note-board-express-postgress",
   "version": "1.0.0",
-  "description": "A simple To-do list app using express framework and PostgreSQL Database and user management",
+  "description": "Note board app using express framework and PostgreSQL Database and user management",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MahmoudDahdouh/todo-list-express-postgress.git"
+    "url": "git+https://github.com/MahmoudDahdouh/note-board-express-postgress.git"
   },
   "author": "Mahmoud Dahdouh",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/MahmoudDahdouh/todo-list-express-postgress/issues"
+    "url": "https://github.com/MahmoudDahdouh/note-board-express-postgress/issues"
   },
-  "homepage": "https://github.com/MahmoudDahdouh/todo-list-express-postgress#readme",
+  "homepage": "https://github.com/MahmoudDahdouh/note-board-express-postgress#readme",
   "dependencies": {
     "bcrypt": "^5.0.1",
     "body-parser": "^1.20.0",
