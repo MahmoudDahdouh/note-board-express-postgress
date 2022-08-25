@@ -15,6 +15,13 @@ CREATE TABLE users (
     modified_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+-- # category
+CREATE TABLE category(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    FOREIGN KEY(id) REFERENCES users(id)
+);
+
 -- # note
 CREATE TABLE note(
     id BIGSERIAL PRIMARY KEY,
@@ -23,17 +30,11 @@ CREATE TABLE note(
     is_checked BOOLEAN DEFAULT false,
     is_private BOOLEAN DEFAULT false,
     FOREIGN KEY(id) REFERENCES users(id),
-    FOREIGN KEY(id) REFERENCES category(id) DEFAULT 0,
+    FOREIGN KEY(id) REFERENCES category(id),
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     modified_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- # category
-CREATE TABLE category(
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(50) NOT NULL,
-    FOREIGN KEY(id) REFERENCES users(id)
-);
 
 -- # tag
 CREATE TABLE tag(
