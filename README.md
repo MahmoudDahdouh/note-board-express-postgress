@@ -1,3 +1,3 @@
-# To-do list (Express, PostgrSQL)
+# Note board (Express, PostgrSQL)
 ## Description
-A simple To-do list app using express framework and PostgreSQL Database and user management
+Note board app using express framework and PostgreSQL Database and user management
