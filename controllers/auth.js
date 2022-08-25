@@ -49,11 +49,11 @@ const loginByEmail = (req, res) => {
     }
 
     // password
-    if (!password || password.length < 6) {
+    if (!password || password.trim().length < 6) {
         errors.push('Password must be at least 6 character !')
     }
 
-    if (password.length > 255) {
+    if (password.trim().length > 255) {
         errors.push('Password is too long !')
     }
 
@@ -79,11 +79,20 @@ const loginByEmail = (req, res) => {
                     msg: 'Email or password is wrong !'
                 })
             } else {
-                res.json({
-                    success: true,
-                    code: 200,
-                    user
-                })
+                if (bcrypt.compareSync(password.trim(), result.rows[0].password)) {
+                    delete user.password
+                    res.json({
+                        success: true,
+                        code: 200,
+                        user
+                    })
+                } else {
+                    res.status(401).json({
+                        success: false,
+                        code: 401,
+                        msg: 'Password is wrong !'
+                    })
+                }
             }
         })
     }
@@ -105,11 +114,11 @@ const loginByUsername = (req, res) => {
     }
 
     // password
-    if (password && password.trim().length > 6) {
+    if (password && password.trim().length < 6) {
         errors.push('Password must be at least 6 character !')
     }
 
-    if (password.length > 255) {
+    if (password.trim().length > 255) {
         errors.push('Password is too long !')
     }
 
@@ -135,11 +144,21 @@ const loginByUsername = (req, res) => {
                     msg: 'Username or password is wrong !'
                 })
             } else {
-                res.json({
-                    success: true,
-                    code: 200,
-                    user
-                })
+
+                if (bcrypt.compareSync(password.trim(), result.rows[0].password)) {
+                    delete user.password
+                    res.json({
+                        success: true,
+                        code: 200,
+                        user
+                    })
+                } else {
+                    res.status(401).json({
+                        success: false,
+                        code: 401,
+                        msg: 'Password is wrong !'
+                    })
+                }
             }
         })
     }
@@ -149,7 +168,7 @@ const loginByUsername = (req, res) => {
 /**
  * Signup
  */
-const signup = (req, res) => {
+const signup = async (req, res) => {
     console.log('start sign up');
     let { username, first_name, last_name, email, password } = req.body
 
@@ -193,8 +212,9 @@ const signup = (req, res) => {
             errors
         })
     } else {
+        const hashedPassword = await bcrypt.hash(password.trim(), 10)
         pool.query(quires.signup,
-            [first_name.trim(), last_name.trim(), username.trim(), email.trim(), password.trim()],
+            [first_name.trim(), last_name.trim(), username.trim(), email.trim(), hashedPassword],
             (error, result) => {
                 if (error) {
                     return res.status(500).json(errorResponse)
