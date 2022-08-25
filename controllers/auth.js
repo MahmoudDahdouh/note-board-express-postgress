@@ -3,6 +3,7 @@ const quires = require('../db/quires')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const { validateEmail } = require('../utils/HelperFunctions')
+const config = require('../utils/config')
 
 // error response
 const errorResponse = {
@@ -81,6 +82,13 @@ const loginByEmail = (req, res) => {
             } else {
                 if (bcrypt.compareSync(password.trim(), result.rows[0].password)) {
                     delete user.password
+
+                    // sign token 
+                    const accessToken = jwt.sign(user, config.jwtSecretKey, { expiresIn: '30d' })
+
+                    user.token_type = "Bearer"
+                    user.access_token = accessToken
+
                     res.json({
                         success: true,
                         code: 200,
@@ -147,6 +155,13 @@ const loginByUsername = (req, res) => {
 
                 if (bcrypt.compareSync(password.trim(), result.rows[0].password)) {
                     delete user.password
+
+                    // sign token 
+                    const accessToken = jwt.sign(user, config.jwtSecretKey, { expiresIn: '30d' })
+
+                    user.token_type = "Bearer"
+                    user.access_token = accessToken
+
                     res.json({
                         success: true,
                         code: 200,
@@ -221,6 +236,13 @@ const signup = async (req, res) => {
                 }
 
                 const user = result.rows[0]
+
+                // sign token 
+                const accessToken = jwt.sign(user, config.jwtSecretKey, { expiresIn: '30d' })
+
+                user.token_type = "Bearer"
+                user.access_token = accessToken
+
                 res.status(200).json({
                     success: true,
                     code: 200,
