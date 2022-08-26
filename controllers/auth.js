@@ -121,6 +121,10 @@ const loginByUsername = (req, res) => {
         errors.push('Username is too long !')
     }
 
+    if (username && username.trim().includes(' ')) {
+        errors.push('Username can not contains white spaces !')
+    }
+
     // password
     if (password && password.trim().length < 6) {
         errors.push('Password must be at least 6 character !')

@@ -1,5 +1,7 @@
 -- Create database
 CREATE DATABASE note_board;
+-- connect to database
+\c note_board;
 
 -- Create tables
 -- # user
@@ -28,8 +30,10 @@ CREATE TABLE note(
     title VARCHAR(100) NOT NULL,
     description TEXT,
     is_checked BOOLEAN DEFAULT false,
-    is_private BOOLEAN DEFAULT false,
+    is_public BOOLEAN DEFAULT false,
+    user_id INT,
     FOREIGN KEY(id) REFERENCES users(id),
+    category_id INT,
     FOREIGN KEY(id) REFERENCES category(id),
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     modified_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP

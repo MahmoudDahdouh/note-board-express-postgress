@@ -71,6 +71,10 @@ const checkUsernameIsExist = (req, res, next) => {
         errors.push('Username is too long !')
     }
 
+    if (username && username.trim().includes(' ')) {
+        errors.push('Username can not contains white spaces !')
+    }
+
     if (errors.length > 0) {
         res.json({
             success: false,
