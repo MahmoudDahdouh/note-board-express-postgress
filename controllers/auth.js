@@ -1,5 +1,5 @@
 const pool = require('../db/connect')
-const quires = require('../db/quires')
+const quires = require('../db/queries')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const { validateEmail } = require('../utils/HelperFunctions')
@@ -113,8 +113,8 @@ const loginByUsername = (req, res) => {
     const errors = []
 
     // username
-    if (!username || username.trim().length < 5) {
-        errors.push('Username must be at least 5 character !')
+    if (!username || username.trim().length < 3) {
+        errors.push('Username must be at least 3 character !')
     }
 
     if (username && username.trim().length > 50) {
@@ -195,8 +195,8 @@ const signup = async (req, res) => {
     const errors = []
 
     // first name
-    if (!first_name || first_name.trim().length < 5) {
-        errors.push('First name must be at least 5 character !')
+    if (!first_name || first_name.trim().length < 3) {
+        errors.push('First name must be at least 3 character !')
     }
 
     if (first_name && first_name.trim().length > 50) {
@@ -204,8 +204,8 @@ const signup = async (req, res) => {
     }
 
     // last name
-    if (!last_name || last_name.trim().length < 5) {
-        errors.push('Last name must be at least 5 character !')
+    if (!last_name || last_name.trim().length < 3) {
+        errors.push('Last name must be at least 3 character !')
     }
 
     if (last_name && last_name.trim().length > 50) {

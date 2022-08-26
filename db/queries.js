@@ -50,6 +50,10 @@ const deleteNote = 'DELETE FROM note WHERE id = $id;'
  * category
  */
 
+// check if the user has category
+const isUserHasCategory = 'SELECT s FROM category s WHERE s.user_id = $1;'
+
+
 /**
  * tag
  */
@@ -69,6 +73,9 @@ module.exports = {
     getNoteById,
     createNote,
     updateNote,
-    deleteNote
+    deleteNote,
+
+    //category
+    isUserHasCategory
 
 }

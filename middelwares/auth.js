@@ -1,5 +1,5 @@
 const pool = require('../db/connect')
-const quires = require('../db/quires')
+const quires = require('../db/queries')
 const { validateEmail } = require('../utils/HelperFunctions')
 
 // error response
@@ -63,8 +63,8 @@ const checkUsernameIsExist = (req, res, next) => {
     const errors = []
 
     // username
-    if (!username || username.trim().length < 5) {
-        errors.push('Username must be at least 5 character !')
+    if (!username || username.trim().length < 3) {
+        errors.push('Username must be at least 3 character !')
     }
 
     if (username && username.trim().length > 50) {

@@ -13,30 +13,31 @@ CREATE TABLE users (
     email VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     user_type INT NOT NULL DEFAULT 1,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    modified_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- # category
 CREATE TABLE category(
     id SERIAL PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
-    FOREIGN KEY(id) REFERENCES users(id)
+    user_id INT NOT NULL,
+    CONSTRAINT fk_user_id FOREIGN KEY(user_id) REFERENCES users(id)
 );
 
 -- # note
 CREATE TABLE note(
     id BIGSERIAL PRIMARY KEY,
     title VARCHAR(100) NOT NULL,
-    description TEXT,
-    is_checked BOOLEAN DEFAULT false,
-    is_public BOOLEAN DEFAULT false,
-    user_id INT,
-    FOREIGN KEY(id) REFERENCES users(id),
+    description TEXT DEFAULT '',
+    is_checked boolean DEFAULT FALSE,
+    is_public boolean DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    user_id INT NOT NULL,
     category_id INT,
-    FOREIGN KEY(id) REFERENCES category(id),
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    modified_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    CONSTRAINT fk_user_id FOREIGN KEY(user_id) REFERENCES users(id),
+    CONSTRAINT fk_category_id FOREIGN KEY(category_id) REFERENCES category(id)
 );
 
 
@@ -44,12 +45,14 @@ CREATE TABLE note(
 CREATE TABLE tag(
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- # note tag
 CREATE TABLE note_tag(
     id SERIAL PRIMARY KEY,
-    FOREIGN KEY(id) REFERENCES tag(id),
-    FOREIGN KEY(id) REFERENCES note(id)
+    tag_id INT NOT NULL,
+    note_id INT NOT NULL,
+    CONSTRAINT fk_tag_id FOREIGN KEY(tag_id) REFERENCES tag(id),
+    CONSTRAINT fk_note_id FOREIGN KEY(note_id) REFERENCES note(id)
 );

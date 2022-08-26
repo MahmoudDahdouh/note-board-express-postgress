@@ -10,6 +10,10 @@ app.use(bodyParser.urlencoded({ extended: true }))
 const authRouter = require('./routes/auth.js')
 app.use('/api/v1/auth', authRouter)
 
+// note
+const noteRouter = require('./routes/note')
+app.use('/api/v1/note', noteRouter)
+
 app.get('/', (req, res) => {
     res.send('Hello world')
 })
