@@ -58,7 +58,10 @@ const isUserHasCategory = 'SELECT s FROM category s WHERE s.id = $1 AND s.user_i
 // add new category
 const createNewCategory = `INSERT INTO category (name,user_id)
                             VALUES($1,$2)
-                            RETURNING *`
+                            RETURNING *;`
+
+// get signle category
+const getSingleCategory = `SELECT * FROM category WHERE id = $1 AND user_id = $2;`
 
 
 /**
@@ -84,6 +87,7 @@ module.exports = {
 
     //category
     isUserHasCategory,
-    createNewCategory
+    createNewCategory,
+    getSingleCategory
 
 }

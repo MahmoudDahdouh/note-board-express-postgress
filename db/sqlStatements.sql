@@ -19,12 +19,12 @@ CREATE TABLE users (
 
 -- # category
 CREATE TABLE category(
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
     user_id INT NOT NULL,
-    CONSTRAINT fk_user_id FOREIGN KEY(user_id) REFERENCES users(id)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_user_id FOREIGN KEY(user_id) REFERENCES users(id)
 );
 
 -- # note
