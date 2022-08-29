@@ -88,9 +88,10 @@ const updateCategory = `UPDATE category
                                       to_char(modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at;`
 
 // delete category
-const deleteCategory = `UPDATE FROM category
-                        WHERE  id = $1 AND user_id = $2;`
-
+const deleteCategory = `DELETE FROM category
+                        WHERE id = $1 AND user_id = $2
+                        RETURNING id, name, user_id, to_char(created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
+                            to_char(modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at;`
 
 /**
  * tag

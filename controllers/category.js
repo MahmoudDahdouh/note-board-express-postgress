@@ -174,6 +174,8 @@ const deleteCategory = (req, res) => {
     const token = req.headers.authorization.split(' ')[1]
     const user_id = jwt.verify(token, jwtSecretKey).id
 
+    console.log({ id, user_id });
+
     pool.query(queries.deleteCategory, [id, user_id], (error, result) => {
         if (error) {
             console.log(error);
@@ -182,7 +184,7 @@ const deleteCategory = (req, res) => {
 
         if (result.rows[0]) {
             const category = result.rows[0]
-            res.json({ success: true, code: 200, msg: 'Category updated successfully !', category })
+            res.json({ success: true, code: 200, msg: 'Category deleted successfully !', category })
         } else {
             res.status(404).json({ success: false, code: 404, msg: 'Category not found !' })
 

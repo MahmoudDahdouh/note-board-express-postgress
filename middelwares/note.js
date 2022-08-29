@@ -43,7 +43,6 @@ const checkCategoryIsExist = (req, res, next) => {
         console.log(result);
 
         if (result.rowCount > 0) {
-            console.log({ test: "let next one" });
             next()
         } else {
             res.status(409).json({

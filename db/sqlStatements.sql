@@ -38,8 +38,8 @@ CREATE TABLE note(
     modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     user_id INT NOT NULL,
     category_id INT,
-    CONSTRAINT fk_user_id FOREIGN KEY(user_id) REFERENCES users(id),
-    CONSTRAINT fk_category_id FOREIGN KEY(category_id) REFERENCES category(id)
+    CONSTRAINT fk_user_id FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_category_id FOREIGN KEY(category_id) REFERENCES category(id) ON DELETE CASCADE
 );
 
 
