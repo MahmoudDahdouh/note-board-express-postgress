@@ -3,10 +3,20 @@
  */
 
 // login by email
-const loginByEmail = 'SELECT * FROM users WHERE email = $1;'
+const loginByEmail = `SELECT 
+                            id, username, first_name, last_name, email, password, user_type,
+                            to_char(created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
+                            to_char(modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at
+
+                        FROM users WHERE email = $1;`
 
 // login by username
-const loginByUsername = 'SELECT * FROM users WHERE username = $1;'
+const loginByUsername = `SELECT 
+                                id, username, first_name, last_name, email, password, user_type,
+                                to_char(created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
+                                to_char(modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at
+
+                            FROM users WHERE username = $1;`
 
 // check if username or email is exist
 const isEmailExists = 'SELECT s FROM users s WHERE s.email = $1;'
@@ -16,7 +26,9 @@ const isUsernameExists = 'SELECT s FROM users s WHERE s.username = $1;'
 const signup = `INSERT INTO users
         (first_name, last_name, username, email, password) 
         VALUES ($1,$2,$3,$4,$5)
-        RETURNING id, username, first_name, last_name, email, user_type, created_at, modified_at;`
+        RETURNING id, username, first_name, last_name, email, user_type,
+                to_char(created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
+                to_char(modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at;`
 
 /**
  * note
@@ -28,7 +40,8 @@ const createNote = `INSERT INTO note (title, description, is_public, is_checked,
                     RETURNING
                         id, user_id, title, description, is_checked, is_public, category_id,
                         (SELECT name FROM category WHERE id = category_id LIMIT 1) AS  category_name,
-                        created_at, modified_at;`
+                        to_char(created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
+                        to_char(modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at;`
 
 // get notes for user
 const getNotes = 'SELECT * FROM note WHERE user_id = $1;'
@@ -58,18 +71,25 @@ const isUserHasCategory = 'SELECT s FROM category s WHERE s.id = $1 AND s.user_i
 // add new category
 const createNewCategory = `INSERT INTO category (name,user_id)
                             VALUES($1,$2)
-                            RETURNING *;`
+                            RETURNING id, name, user_id, to_char(created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
+                                      to_char(modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at;`
 
 // get signle category
-const getSingleCategory = `SELECT * FROM category WHERE id = $1 AND user_id = $2;`
+const getSingleCategory = `SELECT id, name, user_id, to_char(created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
+                                  to_char(modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at
+                           FROM category WHERE id = $1 AND user_id = $2;`
 
 // update category
 const updateCategory = `UPDATE category
                         SET
                             name = $1 , modified_at = CURRENT_TIMESTAMP
                         WHERE  id = $2 AND user_id = $3
-                        RETURNING *
-                        ;`
+                        RETURNING id, name, user_id, to_char(created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
+                                      to_char(modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at;`
+
+// delete category
+const deleteCategory = `UPDATE FROM category
+                        WHERE  id = $1 AND user_id = $2;`
 
 
 /**
@@ -97,6 +117,7 @@ module.exports = {
     isUserHasCategory,
     createNewCategory,
     getSingleCategory,
-    updateCategory
+    updateCategory,
+    deleteCategory
 
 }
