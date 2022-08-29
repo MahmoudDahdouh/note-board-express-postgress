@@ -67,8 +67,13 @@ const updateNote = `UPDATE note
                     WHERE id = $id;`
 
 // delete note
-const deleteNote = 'DELETE FROM note WHERE id = $id;'
-
+const deleteNote = `DELETE FROM note
+                    WHERE id = $1 AND user_id = $2
+                    RETURNING 
+                        id, user_id, title, description, is_checked, is_public, category_id,
+                        (SELECT name FROM category WHERE id = category_id LIMIT 1) AS  category_name,
+                        to_char(created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
+                        to_char(modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at;`
 
 /**
  * category
