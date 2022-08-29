@@ -51,11 +51,23 @@ const createNewCategory = (req, res) => {
 const getSingleCategory = (req, res) => {
     const { id } = req.params
 
+    const errors = []
+
     if (!id) {
+        errors.push('Category id not found !')
+    }
+
+    if (!Number.isInteger(Number(id))) {
+        errors.push('Category id is invalid !')
+    }
+
+    // check error
+    if (errors.length > 0) {
         return res.json({
             success: false,
             code: 400,
-            msg: 'Category id not found !'
+            msg: errors[0],
+            errors
         })
     }
 
@@ -81,8 +93,63 @@ const getSingleCategory = (req, res) => {
 
 }
 
+// update category
+const updateCategory = (req, res) => {
+    const { id } = req.params
+    const { name } = req.body
+
+    console.log({ id: id, type: typeof id });
+    const errors = []
+    if (!id) {
+        errors.push('Category id not found !')
+    }
+
+    if (!Number.isInteger(Number(id))) {
+        errors.push('Category id is invalid !')
+    }
+
+    if (!name || name.trim().length === 0) {
+        errors.push("category name is required !")
+    }
+
+    if (name && name.trim().length > 50) {
+        errors.push('Category name is maximum 50 character !')
+    }
+
+    // check error
+    if (errors.length > 0) {
+        return res.json({
+            success: false,
+            code: 400,
+            msg: errors[0],
+            errors
+        })
+    }
+
+    // update category
+    const token = req.headers.authorization.split(' ')[1]
+    const user_id = jwt.verify(token, jwtSecretKey).id
+
+    pool.query(queries.updateCategory, [name, id, user_id], (error, result) => {
+        if (error) {
+            console.log(error);
+            return res.status(590).json(errorResponse)
+        }
+
+        if (result.rows[0]) {
+            const category = result.rows[0]
+            res.json({ success: true, code: 200, msg: 'Category updated successfully !', category })
+        } else {
+            res.status(404).json({ success: false, code: 404, msg: 'Category not found !' })
+
+        }
+    })
+
+}
+
 module.exports = {
     createNewCategory,
     getSingleCategory,
+    updateCategory
 
 }

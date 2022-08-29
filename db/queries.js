@@ -63,6 +63,14 @@ const createNewCategory = `INSERT INTO category (name,user_id)
 // get signle category
 const getSingleCategory = `SELECT * FROM category WHERE id = $1 AND user_id = $2;`
 
+// update category
+const updateCategory = `UPDATE category
+                        SET
+                            name = $1 , modified_at = CURRENT_TIMESTAMP
+                        WHERE  id = $2 AND user_id = $3
+                        RETURNING *
+                        ;`
+
 
 /**
  * tag
@@ -88,6 +96,7 @@ module.exports = {
     //category
     isUserHasCategory,
     createNewCategory,
-    getSingleCategory
+    getSingleCategory,
+    updateCategory
 
 }

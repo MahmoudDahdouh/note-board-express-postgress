@@ -22,7 +22,7 @@ app.get('/', (req, res) => {
     res.send('Hello world')
 })
 
-app.get('*', (req, res) => {
+app.all('*', (req, res) => {
     res.status(404).json({
         success: false,
         code: 404,
@@ -30,12 +30,5 @@ app.get('*', (req, res) => {
     })
 })
 
-app.post('*', (req, res) => {
-    res.status(404).json({
-        success: false,
-        code: 404,
-        msg: 'Not found !'
-    })
-})
 
 app.listen(config.port, () => console.log(`App is listening to port http://localhost:${config.port}/`))
