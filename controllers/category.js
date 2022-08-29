@@ -78,7 +78,7 @@ const getSingleCategory = (req, res) => {
     pool.query(queries.getSingleCategory, [id, user_id], (error, result) => {
         if (error) {
             console.log(error);
-            return res.status(590).json(errorResponse)
+            return res.status(500).json(errorResponse)
         }
 
         if (result.rows[0]) {
@@ -132,7 +132,7 @@ const updateCategory = (req, res) => {
     pool.query(queries.updateCategory, [name, id, user_id], (error, result) => {
         if (error) {
             console.log(error);
-            return res.status(590).json(errorResponse)
+            return res.status(500).json(errorResponse)
         }
 
         if (result.rows[0]) {
@@ -179,7 +179,7 @@ const deleteCategory = (req, res) => {
     pool.query(queries.deleteCategory, [id, user_id], (error, result) => {
         if (error) {
             console.log(error);
-            return res.status(590).json(errorResponse)
+            return res.status(500).json(errorResponse)
         }
 
         if (result.rows[0]) {
@@ -200,7 +200,7 @@ const getAllCategorires = (req, res) => {
     pool.query(queries.getAllCategorires, [user_id], (error, result) => {
         if (error) {
             console.log(error);
-            return res.status(590).json(errorResponse)
+            return res.status(500).json(errorResponse)
         }
         const categories = result.rows
         res.json({ success: true, code: 200, msg: 'Category deleted successfully !', categories })
