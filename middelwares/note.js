@@ -32,23 +32,18 @@ const checkCategoryIsExist = (req, res, next) => {
 
     const token = req.headers.authorization.split(' ')[1]
     const user_id = jwt.verify(token, jwtSecretKey).id
-    pool.query(queries.isUserHasCategory, [user_id], (error, result) => {
+
+    console.log({ category_id: category_id, user_id });
+    pool.query(queries.isUserHasCategory, [category_id, user_id], (error, result) => {
         if (error) {
+            console.log(error);
             res.status(500).json(errorResponse)
         }
 
-        /**
-         *             if (result.rowCount > 0) {
-                res.status(409).json({
-                    success: false,
-                    code: 409,
-                    msg: 'Email is already exist !'
-                })
-            } else {
-                next()
-            }
-         */
-        if (result.rows[0]) {
+        console.log(result);
+
+        if (result.rowCount > 0) {
+            console.log({ test: "let next one" });
             next()
         } else {
             res.status(409).json({

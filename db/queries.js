@@ -26,7 +26,9 @@ const signup = `INSERT INTO users
 const createNote = `INSERT INTO note (title, description, is_public, is_checked, user_id, category_id)
                     VALUES ($1, $2, $3, $4, $5, $6)
                     RETURNING
-                        id, title, description, is_checked, is_public, user_id, category_id, created_at, modified_at;`
+                        id, user_id, title, description, is_checked, is_public, category_id,
+                        (SELECT name FROM category WHERE id = category_id LIMIT 1) AS  category_name,
+                        created_at, modified_at;`
 
 // get notes for user
 const getNotes = 'SELECT * FROM note WHERE user_id = $1;'
@@ -51,7 +53,12 @@ const deleteNote = 'DELETE FROM note WHERE id = $id;'
  */
 
 // check if the user has category
-const isUserHasCategory = 'SELECT s FROM category s WHERE s.user_id = $1;'
+const isUserHasCategory = 'SELECT s FROM category s WHERE s.id = $1 AND s.user_id = $2;'
+
+// add new category
+const createNewCategory = `INSERT INTO category (name,user_id)
+                            VALUES($1,$2)
+                            RETURNING *`
 
 
 /**
@@ -76,6 +83,7 @@ module.exports = {
     deleteNote,
 
     //category
-    isUserHasCategory
+    isUserHasCategory,
+    createNewCategory
 
 }

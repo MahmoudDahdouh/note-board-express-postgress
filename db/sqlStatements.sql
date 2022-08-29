@@ -23,6 +23,8 @@ CREATE TABLE category(
     name VARCHAR(50) NOT NULL,
     user_id INT NOT NULL,
     CONSTRAINT fk_user_id FOREIGN KEY(user_id) REFERENCES users(id)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- # note

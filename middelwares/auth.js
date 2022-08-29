@@ -9,6 +9,11 @@ const errorResponse = {
     msg: 'Something went wrong, Try again later !'
 }
 
+// check if there is valid token
+const checkToken = (req, res, next) => {
+
+}
+
 // check if the email is already exist in database
 const checkEmailIsExist = (req, res, next) => {
     const { email } = req.body
@@ -102,6 +107,7 @@ const checkUsernameIsExist = (req, res, next) => {
 }
 
 module.exports = {
+    checkToken,
     checkEmailIsExist,
     checkUsernameIsExist
 }
