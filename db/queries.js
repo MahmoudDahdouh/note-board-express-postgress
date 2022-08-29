@@ -64,8 +64,20 @@ const getSingleNote = `SELECT
 // update note
 const updateNote = `UPDATE note
                     SET 
-                    WHERE id = $id;`
-
+                        title = $1, description = $2,
+                        is_public = $3, is_checked = $4
+                    WHERE id = $5 AND user_id = $6
+                    RETURNING 
+                        id, user_id, title, description, is_checked, is_public, category_id,
+                        (SELECT name FROM category WHERE id = category_id LIMIT 1) AS  category_name,
+                        to_char(created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
+                        to_char(modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at;`
+/**
+ *         "title": "note title 12 - 4",
+        "description": "description new note",
+        "is_checked": false,
+        "is_public": false,
+ */
 // delete note
 const deleteNote = `DELETE FROM note
                     WHERE id = $1 AND user_id = $2
