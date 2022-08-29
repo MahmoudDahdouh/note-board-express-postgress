@@ -50,7 +50,16 @@ const getNotes = 'SELECT * FROM note WHERE user_id = $1;'
 const getUserNotes = 'SELECT * FROM note WHERE is_public = true AND username = $1;'
 
 // get single note
-const getNoteById = 'SELECT * FROM note WHERE id = $1'
+const getSingleNote = `SELECT 
+                            note.id, note.user_id, title, description, is_checked, is_public,
+                            category_id,category.name  AS  category_name,
+                            to_char(note.created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
+                            to_char(note.modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at
+                        FROM note
+                        INNER JOIN category
+                        ON note.category_id = category.id
+                        WHERE note.id = $1;
+                        `
 
 // update note
 const updateNote = `UPDATE note
@@ -115,7 +124,7 @@ module.exports = {
     // note
     getNotes,
     getUserNotes,
-    getNoteById,
+    getSingleNote,
     createNote,
     updateNote,
     deleteNote,

@@ -87,7 +87,50 @@ const createNote = (req, res) => {
 }
 
 // get  single note
-const getNote = (req, res) => {
+const getSingleNote = (req, res) => {
+    const { id } = req.params
+
+    const errors = []
+
+    if (!id) {
+        errors.push('Note id not found !')
+    }
+
+    if (!Number.isInteger(Number(id))) {
+        errors.push('Note id is invalid !')
+    }
+
+    // check error
+    if (errors.length > 0) {
+        return res.json({
+            success: false,
+            code: 400,
+            msg: errors[0],
+            errors
+        })
+    }
+
+    // get category
+    const token = req.headers.authorization.split(' ')[1]
+    const user_id = jwt.verify(token, jwtSecretKey).id
+
+    pool.query(queries.getSingleNote, [id], (error, result) => {
+        if (error) {
+            console.log(error);
+            return res.status(500).json(errorResponse)
+        }
+
+
+        if (result.rows[0]) {
+
+            const note = result.rows[0]
+            res.json({ success: true, code: 200, note })
+        } else {
+            res.status(404).json({ success: false, code: 404, msg: 'Note not found !' })
+
+        }
+    })
+
 
 }
 
@@ -104,7 +147,7 @@ const updateNote = (req, res) => {
 module.exports = {
     getAllNotes,
     createNote,
-    getNote,
+    getSingleNote,
     deleteNote,
     updateNote,
 }
