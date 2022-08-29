@@ -84,9 +84,16 @@ const createNewCategory = `INSERT INTO category (name,user_id)
                                       to_char(modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at;`
 
 // get signle category
-const getSingleCategory = `SELECT id, name, user_id, to_char(created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
-                                  to_char(modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at
-                           FROM category WHERE id = $1 AND user_id = $2;`
+const getSingleCategory = `SELECT 
+                                category.id, category.name, COUNT(category_id) AS no_of_notes,
+                                category.user_id,
+                                to_char(category.created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
+                                to_char(category.modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at
+                           FROM category 
+                           INNER JOIN note
+                           ON note.category_id = category.id
+                           GROUP BY category.id
+                           HAVING category.id = $1 AND category.user_id = $2;`
 
 // update category
 const updateCategory = `UPDATE category
@@ -103,10 +110,17 @@ const deleteCategory = `DELETE FROM category
                             to_char(modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at;`
 
 // get all categoreis
-const getAllCategorires = `SELECT  id, name, user_id, to_char(created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
-                                to_char(modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at
-                                FROM category
-                            WHERE user_id = $1;`
+const getAllCategorires = `SELECT 
+                                category.id, category.name, COUNT(category_id) AS no_of_notes,
+                                category.user_id,
+                                to_char(category.created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
+                                to_char(category.modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at
+                           FROM category 
+                           INNER JOIN note
+                           ON note.category_id = category.id
+                           GROUP BY category.id
+                           HAVING category.user_id = $1;`
+
 
 /**
  * tag

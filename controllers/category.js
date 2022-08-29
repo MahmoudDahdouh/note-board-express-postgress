@@ -203,7 +203,7 @@ const getAllCategorires = (req, res) => {
             return res.status(500).json(errorResponse)
         }
         const categories = result.rows
-        res.json({ success: true, code: 200, msg: 'Category deleted successfully !', categories })
+        res.json({ success: true, code: 200, msg: 'Success !', categories })
 
     })
 
