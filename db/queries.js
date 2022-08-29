@@ -93,6 +93,12 @@ const deleteCategory = `DELETE FROM category
                         RETURNING id, name, user_id, to_char(created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
                             to_char(modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at;`
 
+// get all categoreis
+const getAllCategorires = `SELECT  id, name, user_id, to_char(created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
+                                to_char(modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at
+                                FROM category
+                            WHERE user_id = $1;`
+
 /**
  * tag
  */
@@ -119,6 +125,7 @@ module.exports = {
     createNewCategory,
     getSingleCategory,
     updateCategory,
-    deleteCategory
+    deleteCategory,
+    getAllCategorires
 
 }

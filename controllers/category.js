@@ -192,10 +192,28 @@ const deleteCategory = (req, res) => {
     })
 }
 
+// get all categories
+const getAllCategorires = (req, res) => {
+    const token = req.headers.authorization.split(' ')[1]
+    const user_id = jwt.verify(token, jwtSecretKey).id
+
+    pool.query(queries.getAllCategorires, [user_id], (error, result) => {
+        if (error) {
+            console.log(error);
+            return res.status(590).json(errorResponse)
+        }
+        const categories = result.rows
+        res.json({ success: true, code: 200, msg: 'Category deleted successfully !', categories })
+
+    })
+
+}
+
 module.exports = {
     createNewCategory,
     getSingleCategory,
     updateCategory,
-    deleteCategory
+    deleteCategory,
+    getAllCategorires
 
 }

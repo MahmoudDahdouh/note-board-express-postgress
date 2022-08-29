@@ -1,9 +1,14 @@
-const { createNewCategory, getSingleCategory, updateCategory, deleteCategory } = require('../controllers/category')
+const { createNewCategory, getSingleCategory, updateCategory, deleteCategory, getAllCategorires } = require('../controllers/category')
 const { checkToken } = require('../middelwares/auth')
 const router = require('express').Router()
 
-// create new category
-router.post('/', createNewCategory)
+
+router.route('/')
+    // create new category
+    .post(createNewCategory)
+
+    // get all categories
+    .get(getAllCategorires)
 
 router.route('/:id')
     // get singel category
