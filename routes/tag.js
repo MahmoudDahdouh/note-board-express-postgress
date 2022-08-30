@@ -1,4 +1,4 @@
-const { createNewTag, deleteTag, updateTag } = require('../controllers/tag')
+const { createNewTag, deleteTag, updateTag, getSingleTag } = require('../controllers/tag')
 
 const router = require('express').Router()
 
@@ -6,6 +6,9 @@ const router = require('express').Router()
 router.post('/', createNewTag)
 
 router.route('/:id')
+    // get tag
+    .get(getSingleTag)
+
     // delete tag
     .delete(deleteTag)
 

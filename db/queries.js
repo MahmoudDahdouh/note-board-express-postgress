@@ -172,6 +172,17 @@ const updateTag = `UPDATE tag
                         RETURNING id, name, user_id, to_char(created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
                                       to_char(modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at;`
 
+// get signle category
+const getSingleTag = `SELECT 
+                                id, name, user_id,
+                                (
+                                    SELECT COUNT(*) FROM note_tag WHERE id = $1
+                                ) AS no_of_notes,
+                                to_char(created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
+                                to_char(modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at
+                            FROM tag 
+                            WHERE id = $1 AND user_id = $2;`
+
 module.exports = {
     // auth
     loginByEmail,
@@ -200,6 +211,7 @@ module.exports = {
     // tag
     createNewTag,
     deleteTag,
-    updateTag
+    updateTag,
+    getSingleTag
 
 }
