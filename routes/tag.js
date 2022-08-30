@@ -1,4 +1,4 @@
-const { createNewTag, deleteTag } = require('../controllers/tag')
+const { createNewTag, deleteTag, updateTag } = require('../controllers/tag')
 
 const router = require('express').Router()
 
@@ -8,6 +8,9 @@ router.post('/', createNewTag)
 router.route('/:id')
     // delete tag
     .delete(deleteTag)
+
+    // update tag
+    .patch(updateTag)
 
 
 module.exports = router

@@ -164,6 +164,13 @@ const deleteTag = `DELETE FROM tag
                         RETURNING id, name, user_id, to_char(created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
                             to_char(modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at;`
 
+// update tag
+const updateTag = `UPDATE tag
+                        SET
+                            name = $1 , modified_at = CURRENT_TIMESTAMP
+                        WHERE  id = $2 AND user_id = $3
+                        RETURNING id, name, user_id, to_char(created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
+                                      to_char(modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at;`
 
 module.exports = {
     // auth
@@ -192,6 +199,7 @@ module.exports = {
 
     // tag
     createNewTag,
-    deleteTag
+    deleteTag,
+    updateTag
 
 }
