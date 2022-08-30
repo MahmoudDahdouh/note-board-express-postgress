@@ -158,6 +158,13 @@ const createNewTag = `INSERT INTO tag (name,user_id)
                             RETURNING id, name, user_id, to_char(created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
                                       to_char(modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at;`
 
+// delete tag
+const deleteTag = `DELETE FROM tag
+                        WHERE id = $1 AND user_id = $2
+                        RETURNING id, name, user_id, to_char(created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
+                            to_char(modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at;`
+
+
 module.exports = {
     // auth
     loginByEmail,
@@ -184,6 +191,7 @@ module.exports = {
     getAllCategorires,
 
     // tag
-    createNewTag
+    createNewTag,
+    deleteTag
 
 }
