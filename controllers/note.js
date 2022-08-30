@@ -14,6 +14,7 @@ const getAllNotes = (req, res) => {
 
 }
 
+
 // create a new note
 const createNote = (req, res) => {
     const { title, description, category_id } = req.body
@@ -251,11 +252,6 @@ const updateNote = (req, res) => {
     pool.query(queries.updateNote,
         [title, description, is_public, is_checked, id, user_id],
 
-        /*
-title = $1, description = $2,
-                        is_checked = $3, is_public = $4,
-                    WHERE id = $5 AND user_id = $6
-        */
         (error, result) => {
             if (error) {
                 console.log(error);

@@ -18,6 +18,11 @@ app.use('/api/v1/note', noteRouter)
 const categoryRouter = require('./routes/category.js')
 app.use('/api/v1/category', categoryRouter)
 
+// tag
+const tagRouter = require('./routes/tag.js')
+app.use('/api/v1/tag', tagRouter)
+
+// index page
 app.get('/', (req, res) => {
     res.send('Hello world')
 })

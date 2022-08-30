@@ -61,6 +61,21 @@ const getSingleNote = `SELECT
                         WHERE note.id = $1;
                         `
 
+// get all notes for all categories
+const getAllNotesForAllCategories =
+    `SELECT 
+        category.id, category.name, COUNT(category_id) AS no_of_notes,
+        category.user_id,
+        to_char(category.created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
+        to_char(category.modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at,
+        (SELECT * FROM note WHERE category_id = category.id) AS notes
+    FROM category 
+    INNER JOIN note
+    ON note.category_id = category.id
+    GROUP BY category.id
+    HAVING category.id = $1 AND category.user_id = $2;`
+
+
 // update note
 const updateNote = `UPDATE note
                     SET 
@@ -72,12 +87,7 @@ const updateNote = `UPDATE note
                         (SELECT name FROM category WHERE id = category_id LIMIT 1) AS  category_name,
                         to_char(created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
                         to_char(modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at;`
-/**
- *         "title": "note title 12 - 4",
-        "description": "description new note",
-        "is_checked": false,
-        "is_public": false,
- */
+
 // delete note
 const deleteNote = `DELETE FROM note
                     WHERE id = $1 AND user_id = $2
@@ -142,7 +152,11 @@ const getAllCategorires = `SELECT
 /**
  * tag
  */
-
+// create new tag
+const createNewTag = `INSERT INTO tag (name,user_id)
+                            VALUES($1,$2)
+                            RETURNING id, name, user_id, to_char(created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
+                                      to_char(modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at;`
 
 module.exports = {
     // auth
@@ -153,6 +167,7 @@ module.exports = {
     signup,
 
     // note
+    getAllNotesForAllCategories,
     getNotes,
     getUserNotes,
     getSingleNote,
@@ -166,6 +181,9 @@ module.exports = {
     getSingleCategory,
     updateCategory,
     deleteCategory,
-    getAllCategorires
+    getAllCategorires,
+
+    // tag
+    createNewTag
 
 }

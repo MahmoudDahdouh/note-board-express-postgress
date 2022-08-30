@@ -1,4 +1,4 @@
-const { createNote, getSingleNote, deleteNote, updateNote } = require('../controllers/note')
+const { createNote, getSingleNote, deleteNote, updateNote, getNotesWithAllCategories: getNotesForAllCategories } = require('../controllers/note')
 const { checkCategoryIsExist } = require('../middelwares/note')
 
 const router = require('express').Router()
