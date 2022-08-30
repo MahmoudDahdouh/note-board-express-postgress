@@ -188,9 +188,26 @@ const getSingleTag = (req, res) => {
     })
 }
 
+// get all tags
+const getAllTags = (req, res) => {
+    const token = req.headers.authorization.split(' ')[1]
+    const user_id = jwt.verify(token, jwtSecretKey).id
+
+    pool.query(queries.getAllTags, [user_id], (error, result) => {
+        if (error) {
+            console.log(error);
+            return res.status(500).json(errorResponse)
+        }
+        const tags = result.rows
+        res.json({ success: true, code: 200, msg: 'Success !', tags })
+
+    })
+
+}
 module.exports = {
     createNewTag,
     deleteTag,
     updateTag,
-    getSingleTag
+    getSingleTag,
+    getAllTags
 }

@@ -176,12 +176,25 @@ const updateTag = `UPDATE tag
 const getSingleTag = `SELECT 
                                 id, name, user_id,
                                 (
-                                    SELECT COUNT(*) FROM note_tag WHERE id = $1
+                                    SELECT COUNT(*) FROM note_tag WHERE tag_id = $1
                                 ) AS no_of_notes,
                                 to_char(created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
                                 to_char(modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at
                             FROM tag 
                             WHERE id = $1 AND user_id = $2;`
+
+
+// get all tags
+const getAllTags = `SELECT 
+                        id, name, user_id,
+                        (
+                            SELECT COUNT(*) FROM note_tag WHERE tag_id = tag.id
+                        ) AS no_of_notes,
+                        to_char(created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
+                        to_char(modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at
+                    FROM tag 
+                    WHERE user_id = $1;`
+
 
 module.exports = {
     // auth
@@ -212,6 +225,7 @@ module.exports = {
     createNewTag,
     deleteTag,
     updateTag,
-    getSingleTag
+    getSingleTag,
+    getAllTags
 
 }
