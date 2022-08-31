@@ -209,11 +209,46 @@ const getAllCategorires = (req, res) => {
 
 }
 
+// get all notes for category
+const getAllNotesForCategory = (req, res) => {
+    const { id } = req.params
+
+    const errors = []
+
+    if (!id) {
+        errors.push('Category id not found !')
+    }
+
+    if (!Number.isInteger(Number(id))) {
+        errors.push('Category id is invalid !')
+    }
+
+    // check error
+    if (errors.length > 0) {
+        return res.json({
+            success: false,
+            code: 400,
+            msg: errors[0],
+            errors
+        })
+    }
+
+    pool.query(queries.getAllNotesForCategory, [id], (error, result) => {
+        if (error) {
+            console.log(error);
+            return res.status(500).json(errorResponse)
+        }
+        const notes = result.rows
+        res.json({ success: true, code: 200, msg: 'Success !', notes })
+
+    })
+}
 module.exports = {
     createNewCategory,
     getSingleCategory,
     updateCategory,
     deleteCategory,
-    getAllCategorires
+    getAllCategorires,
+    getAllNotesForCategory
 
 }

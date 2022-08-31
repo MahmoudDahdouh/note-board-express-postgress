@@ -61,21 +61,6 @@ const getSingleNote = `SELECT
                         WHERE note.id = $1;
                         `
 
-// get all notes for all categories
-const getAllNotesForAllCategories =
-    `SELECT 
-        category.id, category.name, COUNT(category_id) AS no_of_notes,
-        category.user_id,
-        to_char(category.created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
-        to_char(category.modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at,
-        (SELECT * FROM note WHERE category_id = category.id) AS notes
-    FROM category 
-    INNER JOIN note
-    ON note.category_id = category.id
-    GROUP BY category.id
-    HAVING category.id = $1 AND category.user_id = $2;`
-
-
 // update note
 const updateNote = `UPDATE note
                     SET 
@@ -147,6 +132,30 @@ const getAllCategorires = `SELECT
                            ON note.category_id = category.id
                            GROUP BY category.id
                            HAVING category.user_id = $1;`
+
+
+// get all notes for all categories
+const getAllNotesForCategory = `SELECT 
+                                        n.id, n.title, n.description, n.is_checked, n.is_public,
+                                        n.user_id, n.category_id,
+                                        c.name AS  category_name,
+                                        to_char(n.created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
+                                        to_char(n.modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at
+                                    FROM note n
+                                    INNER JOIN category c
+                                        ON 
+                                            n.user_id = c.user_id AND c.id = $1
+                                    WHERE n.category_id = $1
+                                    ;`
+/**
+ * n.id,  n.title, n.description, n.is_checked, n.is_public,
+                                n.user_id, n.category_id,
+                                c.name AS  category_name,
+                                nt.tag_id AS tag_id, t.name AS tag_name,
+                                to_char(n.created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
+                                to_char(n.modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at
+ */
+// select n.id, n.title, c.id cat_id from note n INNER join category c on n.user_id = c.user_id AND c.id = 10;^C
 
 
 /**
@@ -222,7 +231,6 @@ module.exports = {
     signup,
 
     // note
-    getAllNotesForAllCategories,
     getNotes,
     getUserNotes,
     getSingleNote,
@@ -237,6 +245,7 @@ module.exports = {
     updateCategory,
     deleteCategory,
     getAllCategorires,
+    getAllNotesForCategory,
 
     // tag
     createNewTag,

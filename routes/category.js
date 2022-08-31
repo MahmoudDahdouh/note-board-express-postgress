@@ -1,4 +1,4 @@
-const { createNewCategory, getSingleCategory, updateCategory, deleteCategory, getAllCategorires } = require('../controllers/category')
+const { createNewCategory, getSingleCategory, updateCategory, deleteCategory, getAllCategorires, getAllNotesForCategory } = require('../controllers/category')
 const { checkToken } = require('../middelwares/auth')
 const router = require('express').Router()
 
@@ -20,5 +20,6 @@ router.route('/:id')
     // delete category
     .delete(deleteCategory)
 
+router.get('/:id/notes', getAllNotesForCategory)
 
 module.exports = router
