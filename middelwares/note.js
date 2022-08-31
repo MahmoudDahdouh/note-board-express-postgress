@@ -33,14 +33,12 @@ const checkCategoryIsExist = (req, res, next) => {
     const token = req.headers.authorization.split(' ')[1]
     const user_id = jwt.verify(token, jwtSecretKey).id
 
-    console.log({ category_id: category_id, user_id });
     pool.query(queries.isUserHasCategory, [category_id, user_id], (error, result) => {
         if (error) {
             console.log(error);
-            res.status(500).json(errorResponse)
+            return res.status(500).json(errorResponse)
         }
 
-        console.log(result);
 
         if (result.rowCount > 0) {
             next()

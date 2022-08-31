@@ -16,9 +16,10 @@ const getAllNotes = (req, res) => {
 
 
 // create a new note
-const createNote = (req, res) => {
-    const { title, description, category_id } = req.body
+const createNote = async (req, res) => {
+    const { title, description, category_id, tags } = req.body
     let { is_public, is_checked } = req.body
+
 
     const errors = []
 
@@ -61,6 +62,19 @@ const createNote = (req, res) => {
         is_checked = false
     }
 
+    // tags
+    if (tags && typeof tags == 'object') {
+        console.log(tags);
+        for (const tag of tags) {
+            if (!Number.isInteger(Number(tag))) {
+                errors.push('invalid tag id')
+            }
+        }
+    }
+    if (tags && typeof tags != 'object') {
+        errors.push('tags array is invalid - use tags[] instead !')
+    }
+
 
     if (errors.length > 0) {
         return res.json({
@@ -75,16 +89,37 @@ const createNote = (req, res) => {
     const token = req.headers.authorization.split(' ')[1]
     const user_id = jwt.verify(token, jwtSecretKey).id
 
-    pool.query(queries.createNote,
-        [title, description, is_public, is_checked, user_id, category_id],
-        (error, result) => {
-            if (error) {
-                console.log({ error });
-                return res.status(500).json(errorResponse)
+    try {
+        // start transaction
+        await pool.query('BEGIN;')
+
+        // create new note
+        let note =
+            await (await pool.query(queries.createNote, [title, description, is_public, is_checked, user_id, category_id])).rows[0]
+
+        // set note's tags
+        if (tags) {
+            for (const tag of tags) {
+                // check if the tag is exist
+                const result = await pool.query(queries.checkIfTheUserHasTags, [Number(tag.trim()), user_id])
+                if (result.rows[0]) {
+                    await pool.query(queries.insertNoteTag, [Number(tag.trim()), note.id, user_id])
+                }
             }
-            const note = result.rows[0]
-            res.json({ success: true, code: 200, note })
-        })
+        }
+
+        // COMMIT
+        await pool.query('COMMIT;')
+
+        res.json({ success: true, code: 200, note })
+
+    } catch (error) {
+        console.log({ rollback: "yaa it's working" });
+        await pool.query('ROLLBACK;')
+        console.log({ error });
+        return res.status(500).json(errorResponse)
+    }
+
 }
 
 // get  single note

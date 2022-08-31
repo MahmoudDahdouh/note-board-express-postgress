@@ -43,6 +43,14 @@ const createNote = `INSERT INTO note (title, description, is_public, is_checked,
                         to_char(created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
                         to_char(modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at;`
 
+// insert note tag
+const insertNoteTag = `INSERT INTO note_tag  (tag_id, note_id, user_id)
+                        VALUES ($1,$2,$3)
+                        ;`
+
+// check if the user has the tags
+const checkIfTheUserHasTags = `SELECT * FROM tag WHERE id = $1 AND user_id = $2 LIMIT 1;`
+
 // get notes for user
 const getNotes = 'SELECT * FROM note WHERE user_id = $1;'
 
@@ -147,16 +155,6 @@ const getAllNotesForCategory = `SELECT
                                             n.user_id = c.user_id AND c.id = $1
                                     WHERE n.category_id = $1
                                     ;`
-/**
- * n.id,  n.title, n.description, n.is_checked, n.is_public,
-                                n.user_id, n.category_id,
-                                c.name AS  category_name,
-                                nt.tag_id AS tag_id, t.name AS tag_name,
-                                to_char(n.created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
-                                to_char(n.modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at
- */
-// select n.id, n.title, c.id cat_id from note n INNER join category c on n.user_id = c.user_id AND c.id = 10;^C
-
 
 /**
  * tag
@@ -235,6 +233,8 @@ module.exports = {
     getUserNotes,
     getSingleNote,
     createNote,
+    insertNoteTag,
+    checkIfTheUserHasTags,
     updateNote,
     deleteNote,
 

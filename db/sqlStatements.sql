@@ -58,6 +58,8 @@ CREATE TABLE note_tag(
     id SERIAL PRIMARY KEY,
     tag_id INT NOT NULL,
     note_id INT NOT NULL,
+    user_id INT NOT NULL,
     CONSTRAINT fk_tag_id FOREIGN KEY(tag_id) REFERENCES tag(id),
-    CONSTRAINT fk_note_id FOREIGN KEY(note_id) REFERENCES note(id)
+    CONSTRAINT fk_note_id FOREIGN KEY(note_id) REFERENCES note(id),
+    CONSTRAINT fk_user_id FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
 );
