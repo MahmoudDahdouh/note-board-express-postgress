@@ -145,6 +145,7 @@ const updateTag = (req, res) => {
     })
 }
 
+// get single note
 const getSingleTag = (req, res) => {
     const { id } = req.params
 
@@ -204,10 +205,46 @@ const getAllTags = (req, res) => {
     })
 
 }
+
+// get all notes for tags
+const getAllNotesForTag = (req, res) => {
+    const { id } = req.params
+
+    const errors = []
+
+    if (!id) {
+        errors.push('Tag id not found !')
+    }
+
+    if (!Number.isInteger(Number(id))) {
+        errors.push('Tag id is invalid !')
+    }
+
+    // check error
+    if (errors.length > 0) {
+        return res.json({
+            success: false,
+            code: 400,
+            msg: errors[0],
+            errors
+        })
+    }
+
+    pool.query(queries.getAllNotesForTag, [id], (error, result) => {
+        if (error) {
+            console.log(error);
+            return res.status(500).json(errorResponse)
+        }
+        const tags = result.rows
+        res.json({ success: true, code: 200, msg: 'Success !', tags })
+
+    })
+}
 module.exports = {
     createNewTag,
     deleteTag,
     updateTag,
     getSingleTag,
-    getAllTags
+    getAllTags,
+    getAllNotesForTag
 }

@@ -195,6 +195,23 @@ const getAllTags = `SELECT
                     FROM tag 
                     WHERE user_id = $1;`
 
+const getAllNotesForTag = `SELECT
+                                n.id,  n.title, n.description, n.is_checked, n.is_public,
+                                n.user_id, n.category_id,
+                                c.name AS  category_name,
+                                nt.tag_id AS tag_id, t.name AS tag_name,
+                                to_char(n.created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
+                                to_char(n.modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at
+                            FROM note_tag AS nt 
+                            INNER JOIN note AS n 
+                                ON nt.note_id = n.id
+                            INNER JOIN category AS c 
+                                ON n.category_id = c.id
+                            INNER JOIN tag as t
+                                ON nt.tag_id = t.id
+                            WHERE nt.tag_id = $1;
+                            `
+
 
 module.exports = {
     // auth
@@ -226,6 +243,7 @@ module.exports = {
     deleteTag,
     updateTag,
     getSingleTag,
-    getAllTags
+    getAllTags,
+    getAllNotesForTag
 
 }

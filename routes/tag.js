@@ -1,4 +1,4 @@
-const { createNewTag, deleteTag, updateTag, getSingleTag, getAllTags } = require('../controllers/tag')
+const { createNewTag, deleteTag, updateTag, getSingleTag, getAllTags, getAllNotesForTag } = require('../controllers/tag')
 
 const router = require('express').Router()
 
@@ -22,6 +22,8 @@ router.route('/:id')
 
     // update tag
     .patch(updateTag)
+
+router.get('/:id/notes', getAllNotesForTag)
 
 
 module.exports = router
