@@ -68,6 +68,8 @@ const getSingleNote = `SELECT
                         ON note.category_id = category.id
                         WHERE note.id = $1;
                         `
+// get note's tag
+const getNoteTags = `SELECT tag.id, tag.name FROM note_tag INNER JOIN tag ON tag.id = note_tag.tag_id WHERE note_tag.note_id = $1;`
 
 // update note
 const updateNote = `UPDATE note
@@ -235,6 +237,7 @@ module.exports = {
     createNote,
     insertNoteTag,
     checkIfTheUserHasTags,
+    getNoteTags,
     updateNote,
     deleteNote,
 

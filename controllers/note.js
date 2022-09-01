@@ -94,8 +94,7 @@ const createNote = async (req, res) => {
         await pool.query('BEGIN;')
 
         // create new note
-        let note =
-            await (await pool.query(queries.createNote, [title, description, is_public, is_checked, user_id, category_id])).rows[0]
+        let note = (await pool.query(queries.createNote, [title, description, is_public, is_checked, user_id, category_id])).rows[0]
 
         // set note's tags
         if (tags) {
@@ -114,16 +113,14 @@ const createNote = async (req, res) => {
         res.json({ success: true, code: 200, note })
 
     } catch (error) {
-        console.log({ rollback: "yaa it's working" });
         await pool.query('ROLLBACK;')
-        console.log({ error });
         return res.status(500).json(errorResponse)
     }
 
 }
 
 // get  single note
-const getSingleNote = (req, res) => {
+const getSingleNote = async (req, res) => {
     const { id } = req.params
 
     const errors = []
@@ -150,24 +147,25 @@ const getSingleNote = (req, res) => {
     const token = req.headers.authorization.split(' ')[1]
     const user_id = jwt.verify(token, jwtSecretKey).id
 
-    pool.query(queries.getSingleNote, [id], (error, result) => {
-        if (error) {
-            console.log(error);
-            return res.status(500).json(errorResponse)
-        }
+    try {
+        // start transaction
+        await pool.query('BEGIN;')
 
+        const note = (await pool.query(queries.getSingleNote, [id])).rows[0]
+        const tags = (await pool.query(queries.getNoteTags, [id])).rows
 
-        if (result.rows[0]) {
+        note['tags'] = tags
+        res.json({ success: true, code: 200, note })
 
-            const note = result.rows[0]
-            res.json({ success: true, code: 200, note })
-        } else {
-            res.status(404).json({ success: false, code: 404, msg: 'Note not found !' })
+        // COMMIT
+        await pool.query('COMMIT;')
 
-        }
-    })
+    } catch (error) {
+        console.log(error);
+        await pool.query('ROLLBACK;')
+        return res.status(500).json(errorResponse)
 
-
+    }
 }
 
 // delete note
