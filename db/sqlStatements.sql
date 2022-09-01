@@ -5,7 +5,7 @@ CREATE DATABASE note_board;
 
 -- Create tables
 -- # user
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id BIGSERIAL PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
@@ -18,7 +18,7 @@ CREATE TABLE users (
 );
 
 -- # category
-CREATE TABLE category(
+CREATE TABLE IF NOT EXISTS category(
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
     user_id INT NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE category(
 );
 
 -- # note
-CREATE TABLE note(
+CREATE TABLE IF NOT EXISTS note(
     id BIGSERIAL PRIMARY KEY,
     title VARCHAR(100) NOT NULL,
     description TEXT DEFAULT '',
@@ -44,7 +44,7 @@ CREATE TABLE note(
 
 
 -- # tag
-CREATE TABLE tag(
+CREATE TABLE IF NOT EXISTS tag(
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
     user_id INT NOT NULL,
@@ -54,7 +54,7 @@ CREATE TABLE tag(
 );
 
 -- # note tag
-CREATE TABLE note_tag(
+CREATE TABLE IF NOT EXISTS note_tag(
     id SERIAL PRIMARY KEY,
     tag_id INT NOT NULL,
     note_id INT NOT NULL,
