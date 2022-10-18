@@ -50,7 +50,7 @@ const loginByEmail = (req, res) => {
     }
 
     // password
-    if (!password || password.trim().length < 6) {
+    if (password && password.trim().length < 6) {
         errors.push('Password must be at least 6 character !')
     }
 
@@ -69,7 +69,7 @@ const loginByEmail = (req, res) => {
     } else {
         pool.query(quires.loginByEmail, [email.trim()], (error, result) => {
             if (error) {
-                return res.status(500).json(errorResponse)
+                return res.status(500).json({ errorResponse, test: 'password', password: password || 'not found' })
             }
 
             const user = result.rows[0]
@@ -213,7 +213,7 @@ const signup = async (req, res) => {
     }
 
     // password
-    if (!password || password.trim().length < 6) {
+    if (password || password.trim().length < 6) {
         errors.push('Password must be at least 6 character !')
     }
 
