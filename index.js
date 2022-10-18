@@ -23,10 +23,10 @@ app.use('/api/v1/category', categoryRouter)
 const tagRouter = require('./routes/tag.js')
 app.use('/api/v1/tag', tagRouter)
 
-// index page
-app.get('/', (req, res) => {
-    res.send('Hello world')
-})
+// // index page
+// app.get('/', (req, res) => {
+//     res.send('Hello world')
+// })
 
 app.all('*', (req, res) => {
     res.status(404).json({

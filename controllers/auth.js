@@ -22,7 +22,7 @@ const login = (req, res) => {
     } else if (username) {
         loginByUsername(req, res)
     } else {
-        res.json({
+        res.status(400).json({
             success: false,
             code: 400,
             msg: 'Username or email are required !'
@@ -60,7 +60,7 @@ const loginByEmail = (req, res) => {
 
     // check errors
     if (errors.length > 0) {
-        res.json({
+        res.status(400).json({
             success: false,
             code: 400,
             msg: errors[0],
@@ -136,7 +136,7 @@ const loginByUsername = (req, res) => {
 
     // check errors
     if (errors.length > 0) {
-        res.json({
+        res.status(400).json({
             success: false,
             code: 400,
             msg: errors[0],
@@ -224,7 +224,7 @@ const signup = async (req, res) => {
 
     // check errors
     if (errors.length > 0) {
-        res.json({
+        res.status(400).json({
             success: false,
             code: 400,
             msg: errors[0],
