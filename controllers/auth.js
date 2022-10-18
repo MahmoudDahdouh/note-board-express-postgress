@@ -54,7 +54,7 @@ const loginByEmail = (req, res) => {
         errors.push('Password must be at least 6 character !')
     }
 
-    if (password.trim().length > 255) {
+    if (password && password.trim().length > 255) {
         errors.push('Password is too long !')
     }
 

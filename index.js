@@ -1,11 +1,12 @@
 const config = require('./utils/config')
+const cors = require('cors')
 
 const express = require('express')
 const app = express()
 
 const bodyParser = require('body-parser')
 app.use(bodyParser.urlencoded({ extended: true }))
-
+app.use(cors())
 // auth
 const authRouter = require('./routes/auth.js')
 app.use('/api/v1/auth', authRouter)
