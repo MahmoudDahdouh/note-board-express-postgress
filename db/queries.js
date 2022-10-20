@@ -138,7 +138,7 @@ const getAllCategorires = `SELECT
                                 to_char(category.created_at,'yyyy-mm-dd hh24:mi:ss') created_at,
                                 to_char(category.modified_at,'yyyy-mm-dd hh24:mi:ss') modified_at
                            FROM category 
-                           INNER JOIN note
+                           LEFT JOIN note
                            ON note.category_id = category.id
                            GROUP BY category.id
                            HAVING category.user_id = $1;`

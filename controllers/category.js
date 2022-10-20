@@ -39,7 +39,7 @@ const createNewCategory = (req, res) => {
 
     pool.query(queries.createNewCategory, [name, user_id], (error, result) => {
         if (error) {
-            res.status(500).json(errorResponse)
+            res.status(500).json({ error, errorResponse })
         }
 
         const category = result.rows[0]

@@ -1,5 +1,5 @@
 const pool = require('../db/connect')
-const quires = require('../db/queries')
+const queries = require('../db/queries')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const { validateEmail } = require('../utils/HelperFunctions')
@@ -67,9 +67,9 @@ const loginByEmail = (req, res) => {
             errors
         })
     } else {
-        pool.query(quires.loginByEmail, [email.trim()], (error, result) => {
+        pool.query(queries.loginByEmail, [email.trim()], (error, result) => {
             if (error) {
-                return res.status(500).json({ errorResponse, test: 'password', password: password || 'not found' })
+                return res.status(500).json(errorResponse)
             }
 
             const user = result.rows[0]
@@ -143,7 +143,7 @@ const loginByUsername = (req, res) => {
             errors
         })
     } else {
-        pool.query(quires.loginByUsername, [username.trim()], (error, result) => {
+        pool.query(queries.loginByUsername, [username.trim()], (error, result) => {
             if (error) {
                 return res.status(500).json(errorResponse)
             }
@@ -213,7 +213,7 @@ const signup = async (req, res) => {
     }
 
     // password
-    if (password || password.trim().length < 6) {
+    if (password && password.trim().length < 6) {
         errors.push('Password must be at least 6 character !')
     }
 
@@ -232,6 +232,7 @@ const signup = async (req, res) => {
         })
     } else {
         try {
+            console.log('in try catch');
             const hashedPassword = await bcrypt.hash(password.trim(), 10)
 
             // start transaction
@@ -239,34 +240,37 @@ const signup = async (req, res) => {
 
             // create new user
             let user
+            let accessToken
 
-            await pool.query(quires.signup,
+            await pool.query(queries.signup,
                 [first_name.trim(), last_name.trim(), username.trim(), email.trim(), hashedPassword],
                 (error, result) => {
-
+                    console.log('sign up now');
                     user = result.rows[0]
 
                     // sign token 
-                    const accessToken = jwt.sign(user, config.jwtSecretKey, { expiresIn: '30d' })
+                    accessToken = jwt.sign(user, config.jwtSecretKey, { expiresIn: '30d' })
 
                     user.token_type = "Bearer"
                     user.access_token = accessToken
 
-                    res.status(200).json({
-                        success: true,
-                        code: 200,
-                        user
+                    // create default category
+                    pool.query(queries.createNewCategory, ['uncategorized', user.id], (error, result) => {
+
+                        console.log('create category');
+                        res.status(200).json({
+                            success: true,
+                            code: 200,
+                            user
+                        })
+
+                        console.log('commit');
+                        // COMMIT
+                        pool.query('COMMIT;')
                     })
                 }
             )
-            await pool.query(queries.createNewCategory, ['uncategorized', user.id], (error, result) => {
 
-                const category = result.rows[0]
-                res.json({ success: true, code: 200, category })
-            })
-
-            // COMMIT
-            await pool.query('COMMIT;')
 
         } catch (error) {
             console.log(error);
