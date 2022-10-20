@@ -231,29 +231,49 @@ const signup = async (req, res) => {
             errors
         })
     } else {
-        const hashedPassword = await bcrypt.hash(password.trim(), 10)
-        pool.query(quires.signup,
-            [first_name.trim(), last_name.trim(), username.trim(), email.trim(), hashedPassword],
-            (error, result) => {
-                if (error) {
-                    return res.status(500).json(errorResponse)
+        try {
+            const hashedPassword = await bcrypt.hash(password.trim(), 10)
+
+            // start transaction
+            await pool.query('BEGIN;')
+
+            // create new user
+            let user
+
+            await pool.query(quires.signup,
+                [first_name.trim(), last_name.trim(), username.trim(), email.trim(), hashedPassword],
+                (error, result) => {
+
+                    user = result.rows[0]
+
+                    // sign token 
+                    const accessToken = jwt.sign(user, config.jwtSecretKey, { expiresIn: '30d' })
+
+                    user.token_type = "Bearer"
+                    user.access_token = accessToken
+
+                    res.status(200).json({
+                        success: true,
+                        code: 200,
+                        user
+                    })
                 }
+            )
+            await pool.query(queries.createNewCategory, ['uncategorized', user.id], (error, result) => {
 
-                const user = result.rows[0]
+                const category = result.rows[0]
+                res.json({ success: true, code: 200, category })
+            })
 
-                // sign token 
-                const accessToken = jwt.sign(user, config.jwtSecretKey, { expiresIn: '30d' })
+            // COMMIT
+            await pool.query('COMMIT;')
 
-                user.token_type = "Bearer"
-                user.access_token = accessToken
+        } catch (error) {
+            console.log(error);
+            await pool.query('ROLLBACK;')
+            return res.status(500).json(errorResponse)
 
-                res.status(200).json({
-                    success: true,
-                    code: 200,
-                    user
-                })
-            }
-        )
+        }
     }
 }
 
