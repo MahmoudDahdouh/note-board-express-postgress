@@ -13,7 +13,6 @@ const errorResponse = {
 
 // check if there is valid token
 const checkToken = (req, res, next) => {
-    console.log('auth now');
     // check header
     const authHeader = req.headers.authorization
     if (!authHeader || !authHeader.startsWith('Bearer')) {
@@ -28,10 +27,8 @@ const checkToken = (req, res, next) => {
     try {
         const payload = jwt.verify(token, jwtSecretKey)
         req.user = payload
-        console.log({ payload });
         next()
     } catch (error) {
-        console.log(error);
         res.status(401).json({
             success: false,
             code: 401,

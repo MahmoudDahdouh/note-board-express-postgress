@@ -1,7 +1,5 @@
-const jwt = require('jsonwebtoken')
 const pool = require('../db/connect')
 const queries = require('../db/queries')
-const { jwtSecretKey } = require('../utils/config')
 // error response
 const errorResponse = {
     success: false,
@@ -85,24 +83,20 @@ const createNote = async (req, res) => {
         })
     }
 
-
-    const token = req.headers.authorization.split(' ')[1]
-    const user_id = jwt.verify(token, jwtSecretKey).id
-
     try {
         // start transaction
         await pool.query('BEGIN;')
 
         // create new note
-        let note = (await pool.query(queries.createNote, [title, description, is_public, is_checked, user_id, category_id])).rows[0]
+        let note = (await pool.query(queries.createNote, [title, description, is_public, is_checked, req.user.id, category_id])).rows[0]
 
         // set note's tags
         if (tags) {
             for (const tag of tags) {
                 // check if the tag is exist
-                const result = await pool.query(queries.checkIfTheUserHasTags, [Number(tag.trim()), user_id])
+                const result = await pool.query(queries.checkIfTheUserHasTags, [Number(tag.trim()), req.user.id])
                 if (result.rows[0]) {
-                    await pool.query(queries.insertNoteTag, [Number(tag.trim()), note.id, user_id])
+                    await pool.query(queries.insertNoteTag, [Number(tag.trim()), note.id, req.user.id])
                 }
             }
         }
@@ -144,9 +138,6 @@ const getSingleNote = async (req, res) => {
     }
 
     // get note
-    const token = req.headers.authorization.split(' ')[1]
-    const user_id = jwt.verify(token, jwtSecretKey).id
-
     try {
         // start transaction
         await pool.query('BEGIN;')
@@ -192,10 +183,7 @@ const deleteNote = (req, res) => {
     }
 
     // delete note
-    const token = req.headers.authorization.split(' ')[1]
-    const user_id = jwt.verify(token, jwtSecretKey).id
-
-    pool.query(queries.deleteNote, [id, user_id], (error, result) => {
+    pool.query(queries.deleteNote, [id, req.user.id], (error, result) => {
         if (error) {
             console.log(error);
             return res.status(500).json(errorResponse)
@@ -279,11 +267,8 @@ const updateNote = (req, res) => {
     }
 
     // update category
-    const token = req.headers.authorization.split(' ')[1]
-    const user_id = jwt.verify(token, jwtSecretKey).id
-
     pool.query(queries.updateNote,
-        [title, description, is_public, is_checked, id, user_id],
+        [title, description, is_public, is_checked, id, req.user.id],
 
         (error, result) => {
             if (error) {

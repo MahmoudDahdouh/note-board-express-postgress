@@ -1,7 +1,5 @@
-const jwt = require('jsonwebtoken')
 const pool = require('../db/connect')
 const queries = require('../db/queries')
-const { jwtSecretKey } = require('../utils/config')
 // error response
 const errorResponse = {
     success: false,
@@ -34,10 +32,7 @@ const createNewTag = (req, res) => {
     }
 
     // create new tag
-    const token = req.headers.authorization.split(' ')[1]
-    const user_id = jwt.verify(token, jwtSecretKey).id
-
-    pool.query(queries.createNewTag, [name, user_id], (error, result) => {
+    pool.query(queries.createNewTag, [name, req.user.id], (error, result) => {
         if (error) {
             console.log(error);
             res.status(500).json(errorResponse)
@@ -72,12 +67,7 @@ const deleteTag = (req, res) => {
     }
 
     // delete tag
-    const token = req.headers.authorization.split(' ')[1]
-    const user_id = jwt.verify(token, jwtSecretKey).id
-
-    console.log({ id, user_id });
-
-    pool.query(queries.deleteTag, [id, user_id], (error, result) => {
+    pool.query(queries.deleteTag, [id, req.user.id], (error, result) => {
         if (error) {
             console.log(error);
             return res.status(500).json(errorResponse)
@@ -126,10 +116,7 @@ const updateTag = (req, res) => {
     }
 
     // update Tag
-    const token = req.headers.authorization.split(' ')[1]
-    const user_id = jwt.verify(token, jwtSecretKey).id
-
-    pool.query(queries.updateTag, [name, id, user_id], (error, result) => {
+    pool.query(queries.updateTag, [name, id, req.user.id], (error, result) => {
         if (error) {
             console.log(error);
             return res.status(500).json(errorResponse)
@@ -170,10 +157,7 @@ const getSingleTag = (req, res) => {
     }
 
     // get tag
-    const token = req.headers.authorization.split(' ')[1]
-    const user_id = jwt.verify(token, jwtSecretKey).id
-
-    pool.query(queries.getSingleTag, [id, user_id], (error, result) => {
+    pool.query(queries.getSingleTag, [id, req.user.id], (error, result) => {
         if (error) {
             console.log(error);
             return res.status(500).json(errorResponse)
@@ -191,19 +175,14 @@ const getSingleTag = (req, res) => {
 
 // get all tags
 const getAllTags = (req, res) => {
-    const token = req.headers.authorization.split(' ')[1]
-    const user_id = jwt.verify(token, jwtSecretKey).id
-
-    pool.query(queries.getAllTags, [user_id], (error, result) => {
+    pool.query(queries.getAllTags, [req.user.id], (error, result) => {
         if (error) {
             console.log(error);
             return res.status(500).json(errorResponse)
         }
         const tags = result.rows
         res.json({ success: true, code: 200, msg: 'Success !', tags })
-
     })
-
 }
 
 // get all notes for tags

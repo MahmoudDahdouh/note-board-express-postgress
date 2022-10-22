@@ -1,7 +1,5 @@
-const jwt = require('jsonwebtoken')
 const pool = require('../db/connect')
 const queries = require('../db/queries')
-const { jwtSecretKey } = require('../utils/config')
 // error response
 const errorResponse = {
     success: false,
@@ -34,10 +32,7 @@ const createNewCategory = (req, res) => {
     }
 
     // create new category
-    const token = req.headers.authorization.split(' ')[1]
-    const user_id = jwt.verify(token, jwtSecretKey).id
-
-    pool.query(queries.createNewCategory, [name, user_id], (error, result) => {
+    pool.query(queries.createNewCategory, [name, req.user.id], (error, result) => {
         if (error) {
             res.status(500).json({ error, errorResponse })
         }
@@ -72,10 +67,7 @@ const getSingleCategory = (req, res) => {
     }
 
     // get category
-    const token = req.headers.authorization.split(' ')[1]
-    const user_id = jwt.verify(token, jwtSecretKey).id
-
-    pool.query(queries.getSingleCategory, [id, user_id], (error, result) => {
+    pool.query(queries.getSingleCategory, [id, req.user.id], (error, result) => {
         if (error) {
             console.log(error);
             return res.status(500).json(errorResponse)
@@ -126,10 +118,7 @@ const updateCategory = (req, res) => {
     }
 
     // update category
-    const token = req.headers.authorization.split(' ')[1]
-    const user_id = jwt.verify(token, jwtSecretKey).id
-
-    pool.query(queries.updateCategory, [name, id, user_id], (error, result) => {
+    pool.query(queries.updateCategory, [name, id, req.user.id], (error, result) => {
         if (error) {
             console.log(error);
             return res.status(500).json(errorResponse)
@@ -171,12 +160,7 @@ const deleteCategory = (req, res) => {
     }
 
     // delete category
-    const token = req.headers.authorization.split(' ')[1]
-    const user_id = jwt.verify(token, jwtSecretKey).id
-
-    console.log({ id, user_id });
-
-    pool.query(queries.deleteCategory, [id, user_id], (error, result) => {
+    pool.query(queries.deleteCategory, [id, req.user.id], (error, result) => {
         if (error) {
             console.log(error);
             return res.status(500).json(errorResponse)

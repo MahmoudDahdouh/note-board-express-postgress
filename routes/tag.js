@@ -1,6 +1,8 @@
 const { createNewTag, deleteTag, updateTag, getSingleTag, getAllTags, getAllNotesForTag } = require('../controllers/tag')
+const { checkToken } = require('../middelwares/auth')
 
 const router = require('express').Router()
+router.use(checkToken)
 
 // create new tag
 router.post('/', createNewTag)
