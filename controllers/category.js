@@ -194,10 +194,7 @@ const deleteCategory = (req, res) => {
 
 // get all categories
 const getAllCategorires = (req, res) => {
-    const token = req.headers.authorization.split(' ')[1]
-    const user_id = jwt.verify(token, jwtSecretKey).id
-
-    pool.query(queries.getAllCategorires, [user_id], (error, result) => {
+    pool.query(queries.getAllCategorires, [req.user.id], (error, result) => {
         if (error) {
             console.log(error);
             return res.status(500).json(errorResponse)
@@ -233,7 +230,7 @@ const getAllNotesForCategory = (req, res) => {
         })
     }
 
-    pool.query(queries.getAllNotesForCategory, [id], (error, result) => {
+    pool.query(queries.getAllNotesForCategory, [id, req.user.id], (error, result) => {
         if (error) {
             console.log(error);
             return res.status(500).json(errorResponse)

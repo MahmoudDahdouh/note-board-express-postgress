@@ -155,7 +155,7 @@ const getAllNotesForCategory = `SELECT
                                     INNER JOIN category c
                                         ON 
                                             n.user_id = c.user_id AND c.id = $1
-                                    WHERE n.category_id = $1
+                                    WHERE n.category_id = $1 AND n.user_id = $2
                                     ;`
 
 /**

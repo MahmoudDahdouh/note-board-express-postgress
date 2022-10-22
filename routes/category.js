@@ -2,6 +2,7 @@ const { createNewCategory, getSingleCategory, updateCategory, deleteCategory, ge
 const { checkToken } = require('../middelwares/auth')
 const router = require('express').Router()
 
+router.use(checkToken)
 
 router.route('/')
     // create new category

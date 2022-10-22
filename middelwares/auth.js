@@ -1,6 +1,8 @@
 const pool = require('../db/connect')
 const quires = require('../db/queries')
 const { validateEmail } = require('../utils/HelperFunctions')
+const jwt = require('jsonwebtoken')
+const { jwtSecretKey } = require('../utils/config')
 
 // error response
 const errorResponse = {
@@ -11,7 +13,31 @@ const errorResponse = {
 
 // check if there is valid token
 const checkToken = (req, res, next) => {
+    console.log('auth now');
+    // check header
+    const authHeader = req.headers.authorization
+    if (!authHeader || !authHeader.startsWith('Bearer')) {
+        return res.status(401).json({
+            success: false,
+            code: 401,
+            msg: `Authentication failed! You're not allowed`
+        })
+    }
+    const token = authHeader.split(' ')[1]
 
+    try {
+        const payload = jwt.verify(token, jwtSecretKey)
+        req.user = payload
+        console.log({ payload });
+        next()
+    } catch (error) {
+        console.log(error);
+        res.status(401).json({
+            success: false,
+            code: 401,
+            msg: `Authentication failed! You're not allowed`
+        })
+    }
 }
 
 // check if the email is already exist in database
