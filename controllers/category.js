@@ -191,7 +191,7 @@ const getAllCategorires = (req, res) => {
 }
 
 // get all notes for category
-const getAllNotesForCategory = (req, res) => {
+const getAllNotesForCategory = async (req, res) => {
     const { id } = req.params
 
     const errors = []
@@ -213,16 +213,25 @@ const getAllNotesForCategory = (req, res) => {
             errors
         })
     }
+    try {
+        // start transaction
 
-    pool.query(queries.getAllNotesForCategory, [id, req.user.id], (error, result) => {
-        if (error) {
-            console.log(error);
-            return res.status(500).json(errorResponse)
-        }
-        const notes = result.rows
-        res.json({ success: true, code: 200, msg: 'Success !', notes })
+        await pool.query('BEGIN;')
 
-    })
+        let category = (await pool.query(queries.getSingleCategory, [id, req.user.id])).rows[0]
+
+
+        let notes = (await pool.query(queries.getAllNotesForCategory, [id, req.user.id])).rows
+        console.log({ notes, category });
+        // COMMIT
+        pool.query('COMMIT;')
+
+        res.json({ success: true, code: 200, msg: 'Success !', category, notes })
+
+    } catch (error) {
+        await pool.query('ROLLBACK;')
+        return res.status(500).json(errorResponse)
+    }
 }
 module.exports = {
     createNewCategory,
